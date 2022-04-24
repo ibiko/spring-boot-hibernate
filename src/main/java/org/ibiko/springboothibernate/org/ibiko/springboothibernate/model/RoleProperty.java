@@ -8,11 +8,11 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
+@IdClass(RolePropertyPk.class)
 @Getter
 @Setter
 @ToString
 @RequiredArgsConstructor
-@IdClass(RolePropertyPk.class)
 public class RoleProperty implements Serializable {
 
     @Id
@@ -31,11 +31,12 @@ public class RoleProperty implements Serializable {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         RoleProperty that = (RoleProperty) o;
-        return role != null && Objects.equals(role, that.role);
+        return role != null && Objects.equals(role, that.role)
+                && property != null && Objects.equals(property, that.property);
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return Objects.hash(role, property);
     }
 }

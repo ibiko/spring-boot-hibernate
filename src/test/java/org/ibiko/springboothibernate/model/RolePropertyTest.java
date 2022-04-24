@@ -5,8 +5,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @Transactional
@@ -22,7 +29,12 @@ class RolePropertyTest {
     void testAddAllToList(){
         //setup
         Property property = createProperty("value");
+        Property property2 = createProperty("value2");
+        property = this.propertyRepository.save(property);
+        property2 = this.propertyRepository.save(property2);
         Role role = createRole("label");
+        role = this.roleRepository.save(role);
+
         RoleProperty roleProperty = createRoleProperty(property, role, 1);
         role.getRolePropertyList().add(roleProperty);
 
@@ -35,16 +47,22 @@ class RolePropertyTest {
         Property incomingPropertyFromDto = createProperty("valueNew");
         incomingPropertyFromDto.setId(property.getId());
         RoleProperty rolePropertyNewFromDto = createRoleProperty(incomingPropertyFromDto, roleFromRepository, 2);
-        roleFromRepository.getRolePropertyList().add(rolePropertyNewFromDto);
+        RoleProperty rolePropertyNewFromDto2 = createRoleProperty(property2, roleFromRepository, 3);
+
+        roleFromRepository.getRolePropertyList().clear();
+        Set<RoleProperty> rolePropertyNewFromDto1 = new HashSet<>(Arrays.asList(rolePropertyNewFromDto, rolePropertyNewFromDto2));
+        roleFromRepository.getRolePropertyList().addAll(rolePropertyNewFromDto1);
 
 
-        this.roleRepository.saveAndFlush(roleFromRepository);
+       roleFromRepository = this.roleRepository.saveAndFlush(roleFromRepository);
 
         //assert
-        assertEquals(1, roleFromRepository.getRolePropertyList().size());
+        assertEquals(2, roleFromRepository.getRolePropertyList().size());
         assertEquals(property.getId(), roleFromRepository.getRolePropertyList().iterator().next().getProperty().getId());
-        assertEquals(2, roleFromRepository.getRolePropertyList().iterator().next().getSorting());
-        assertEquals("valueNew", roleFromRepository.getRolePropertyList().iterator().next().getProperty().getValue());
+        assertTrue(roleFromRepository.getRolePropertyList().stream().anyMatch(r -> r.getSorting() == 2));
+        assertTrue(roleFromRepository.getRolePropertyList().stream().anyMatch(r -> r.getSorting() == 3));
+
+        //assertEquals("valueNew", roleFromRepository.getRolePropertyList().iterator().next().getProperty().getValue());
     }
 
     private RoleProperty createRoleProperty(Property property, Role role, int sorting) {
