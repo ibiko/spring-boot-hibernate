@@ -2,9 +2,14 @@ package org.ibiko.springboothibernate.org.ibiko.springboothibernate.model;
 
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.*;
 
 @Entity
@@ -12,6 +17,8 @@ import java.util.*;
 @Setter
 @ToString
 @RequiredArgsConstructor
+@Table
+@EntityListeners(AuditingEntityListener.class)
 public class Role implements Serializable {
 
     @Id
@@ -25,6 +32,9 @@ public class Role implements Serializable {
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     private Set<RoleProperty> rolePropertyList = new HashSet<>();
+
+    @CreatedDate
+    private LocalDate createdAt;
 
     @Override
     public boolean equals(Object o) {

@@ -13,6 +13,7 @@ import java.util.Objects;
 @Setter
 @ToString
 @RequiredArgsConstructor
+@Table
 public class RoleProperty implements Serializable {
 
     @Id

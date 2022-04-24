@@ -4,6 +4,7 @@ import org.ibiko.springboothibernate.org.ibiko.springboothibernate.model.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
@@ -12,10 +13,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@EnableJpaAuditing
 @Transactional
 class RolePropertyTest {
 
@@ -61,6 +62,7 @@ class RolePropertyTest {
         assertEquals(property.getId(), roleFromRepository.getRolePropertyList().iterator().next().getProperty().getId());
         assertTrue(roleFromRepository.getRolePropertyList().stream().anyMatch(r -> r.getSorting() == 2));
         assertTrue(roleFromRepository.getRolePropertyList().stream().anyMatch(r -> r.getSorting() == 3));
+        assertNotNull(roleFromRepository.getCreatedAt());
 
         //assertEquals("valueNew", roleFromRepository.getRolePropertyList().iterator().next().getProperty().getValue());
     }

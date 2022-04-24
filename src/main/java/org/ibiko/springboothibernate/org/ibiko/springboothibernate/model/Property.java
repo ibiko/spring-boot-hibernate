@@ -2,9 +2,12 @@ package org.ibiko.springboothibernate.org.ibiko.springboothibernate.model;
 
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
@@ -12,6 +15,8 @@ import java.util.Objects;
 @Setter
 @ToString
 @RequiredArgsConstructor
+@Table
+@EntityListeners(AuditingEntityListener.class)
 public class Property implements Serializable {
 
     @Id
@@ -21,6 +26,9 @@ public class Property implements Serializable {
 
     @Column(nullable = false)
     private String value;
+
+    @CreatedDate
+    private LocalDate createdAt;
 
     @Override
     public boolean equals(Object o) {
