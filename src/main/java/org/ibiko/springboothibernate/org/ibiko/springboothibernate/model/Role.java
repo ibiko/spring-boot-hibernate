@@ -31,7 +31,7 @@ public class Role implements Serializable {
 
     @OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
-    private Set<RoleProperty> rolePropertyList = new HashSet<>();
+    private List<RoleProperty> rolePropertyList = new ArrayList<>();
 
     @CreatedDate
     private LocalDate createdAt;
