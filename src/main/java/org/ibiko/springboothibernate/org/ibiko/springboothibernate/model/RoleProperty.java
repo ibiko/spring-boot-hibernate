@@ -6,6 +6,7 @@ import org.hibernate.Hibernate;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.UUID;
 
 @Entity
 @IdClass(RolePropertyPk.class)
@@ -21,8 +22,9 @@ public class RoleProperty implements Serializable {
     private Role role;
 
     @Id
-    @ManyToOne(optional = false)
-    private Property property;
+    //@ManyToOne(optional = false)
+    @Column(nullable = false)
+    private UUID propertyId;
 
     @Column(nullable = false)
     private Integer sorting;
@@ -33,11 +35,11 @@ public class RoleProperty implements Serializable {
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         RoleProperty that = (RoleProperty) o;
         return role != null && Objects.equals(role, that.role)
-                && property != null && Objects.equals(property, that.property);
+                && propertyId != null && Objects.equals(propertyId, that.propertyId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(role, property);
+        return Objects.hash(role, propertyId);
     }
 }

@@ -6,12 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,16 +24,26 @@ class RolePropertyTest {
     @Autowired
     private PropertyRepository propertyRepository;
 
+    @Autowired
+    private RoleStatusRepository roleStatusRepository;
+
     @Test
     void testAddAllToList(){
         //setup
         Property property = createProperty("value");
         Property property2 = createProperty("value2");
         Property property3 = createProperty("value3");
+
         property = this.propertyRepository.save(property);
         property2 = this.propertyRepository.save(property2);
         property3 = this.propertyRepository.save(property3);
+
+        RoleStatus roleStatus = new RoleStatus();
+        roleStatus.setLabel("roleStatus label");
+        roleStatus = this.roleStatusRepository.save(roleStatus);
+
         Role role = createRole("label");
+        role.setRoleStatus(roleStatus);
         role = this.roleRepository.save(role);
 
         RoleProperty roleProperty = createRoleProperty(property, role, 1);
@@ -46,6 +54,7 @@ class RolePropertyTest {
 
 
         this.roleRepository.saveAndFlush(role);
+
 
         //execute
 
@@ -77,7 +86,7 @@ class RolePropertyTest {
     private RoleProperty createRoleProperty(Property property, Role role, int sorting) {
         RoleProperty roleProperty = new RoleProperty();
         roleProperty.setRole(role);
-        roleProperty.setProperty(property);
+        roleProperty.setPropertyId(property.getId());
         roleProperty.setSorting(sorting);
         return roleProperty;
     }
